@@ -16,7 +16,7 @@ public class SnakeGameGui extends JPanel implements DirectionController {
 	private volatile SnakeGame game;
 
 	public SnakeGameGui(){
-		setPreferredSize(new Dimension(1700, 1500));
+		setPreferredSize(new Dimension(SnakeGame.WIDTH*100, SnakeGame.HEIGHT*100));
 		JFrame frame = new JFrame();
 		frame.add(this);
 		frame.pack();
@@ -41,8 +41,8 @@ public class SnakeGameGui extends JPanel implements DirectionController {
 	}
 
 	public void paint(Graphics g) {
-		for(int i = 0; i < 17; i++) {
-			for(int j = 0; j < 15; j++) {
+		for(int i = 0; i < SnakeGame.WIDTH; i++) {
+			for(int j = 0; j < SnakeGame.HEIGHT; j++) {
 				g.setColor((i+j)%2==0?Color.DARK_GRAY:Color.GRAY);
 				g.fillRect(i*100, j*100, 100, 100);
 			}
@@ -82,10 +82,12 @@ public class SnakeGameGui extends JPanel implements DirectionController {
 	public void attachGame(SnakeGame game) {
 		this.game = game;
 	}
+	
+	public void attach(SnakeGame snakeGame) {}
 
 	public static void main(String[] args) {
 		SnakeGameGui gui = new SnakeGameGui();
-		SnakeGame game = new SnakeGame(gui);
+		SnakeGame game = new SnakeGame(new HamiltonController());
 		gui.attachGame(game);
 		game.start();
 	}

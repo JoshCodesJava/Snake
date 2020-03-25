@@ -8,14 +8,16 @@ public class SnakeGame implements Runnable {
 	private Random rand = new Random();
 	private DirectionController dirController;
 	private LinkedList<Cell> snake = new LinkedList<>();
-	private Direction curDirection = Direction.EAST;
+	private Direction curDirection = null;
 	private Cell apple;
+	public static final int WIDTH = 18;
+	public static final int HEIGHT = 16;
 
 	public SnakeGame(DirectionController controller) {
 		this.dirController = controller;
 		snake.add(new Cell(4,4));
-		snake.add(new Cell(3,4));
-		apple = new Cell(rand.nextInt(17), rand.nextInt(15));
+		apple = new Cell(rand.nextInt(WIDTH), rand.nextInt(HEIGHT));
+		controller.attach(this);
 	}
 
 	public LinkedList<Cell> getSnake() {
@@ -27,9 +29,9 @@ public class SnakeGame implements Runnable {
 		Cell newHead = null;
 
 		Direction newDirection = dirController.getDirection();
-		Direction fixedDir = (curDirection == newDirection.opposite()) ? curDirection : newDirection;
+		curDirection = (curDirection == newDirection.opposite()) ? curDirection : newDirection;
 
-		switch(fixedDir) {
+		switch(curDirection) {
 		case NORTH:
 			newHead = new Cell(head.getX(), head.getY()-1);
 			break;
@@ -43,25 +45,26 @@ public class SnakeGame implements Runnable {
 			newHead = new Cell(head.getX()-1, head.getY());
 			break;
 		};
-		
-		curDirection = fixedDir;
 
 		synchronized(snake) {	
 			if(!newHead.equals(getApple()))
 				snake.removeLast();
 			else
-				apple = new Cell(rand.nextInt(17), rand.nextInt(15));
-			
-			if(newHead.getX() < 0 || newHead.getX() > 16 || newHead.getY() < 0 || newHead.getY() > 14 || snake.contains(newHead))
+				do {
+					apple = new Cell(rand.nextInt(WIDTH), rand.nextInt(HEIGHT));
+				}
+				while(snake.contains(apple) || newHead.equals(apple));
+
+			if(newHead.getX() < 0 || newHead.getX() >= WIDTH || newHead.getY() < 0 || newHead.getY() >= HEIGHT || snake.contains(newHead))
 				System.exit(0);
-			
+
 			snake.add(0, newHead);
 		}
 	}
 
 	public void start() {
 		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-		executor.scheduleAtFixedRate(this, 0, 300, TimeUnit.MILLISECONDS);
+		executor.scheduleAtFixedRate(this, 0, 100, TimeUnit.MILLISECONDS);
 
 	}
 
