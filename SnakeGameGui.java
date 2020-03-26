@@ -91,4 +91,23 @@ public class SnakeGameGui extends JPanel implements DirectionController {
 		gui.attachGame(game);
 		game.start();
 	}
+
+	@Override
+	public Cell next(Cell cur) {
+		int x = cur.getX();
+		int y = cur.getY();
+		if(x==0 && y==0)
+			return new Cell(x+1, y);
+		else if(x==0)
+			return new Cell(x, y-1);
+		else if(y==(SnakeGame.HEIGHT-1))
+			return new Cell(x-1, y);
+		else if(x == (SnakeGame.WIDTH-1))
+			return y%2==0 ? new Cell(x,y+1) : new Cell(x-1,y);
+		else if(x==1)
+			return y%2==0 ? new Cell(x+1, y) : new Cell(x,y+1);
+		else
+			return y%2==0 ? new Cell(x+1, y) : new Cell(x-1, y);
+	}
+
 }
