@@ -19,4 +19,12 @@ public class Cell {
 		Cell cast = (Cell) obj;
 		return cast.x == x && cast.y == y;
 	}
+	
+	public boolean inBounds(int width, int height) {
+		return (0 <= x && x < width && 0 <= y && y < height);
+	}
+	
+	public String toString() {
+		return "(" + x + ", " + y + ")";
+	}
 }
